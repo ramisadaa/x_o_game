@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101827">
+  <meta name="description" content="A clean and responsive X-O game board.">
+  <title>X-O Game</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="game-page">
+    <section class="game-card" aria-labelledby="game-title">
+      <header class="game-header">
+        <div class="eyebrow"><span class="status-dot" aria-hidden="true"></span> TWO PLAYER GAME</div>
+        <h1 id="game-title">X<span class="title-dash"> ~</span> O <span class="title-game">Game</span></h1>
+        <p class="turn-message" aria-live="polite">It's <span id="turn" class="turn-mark">X</span>'s turn</p>
+      </header>
+
+      <div class="game-board" role="group" aria-label="Tic-tac-toe game board">
+        <button class="cell" type="button" data-cell aria-label="Top left cell"></button>
+        <button class="cell" type="button" data-cell aria-label="Top center cell"></button>
+        <button class="cell" type="button" data-cell aria-label="Top right cell"></button>
+        <button class="cell" type="button" data-cell aria-label="Middle left cell"></button>
+        <button class="cell" type="button" data-cell aria-label="Center cell"></button>
+        <button class="cell" type="button" data-cell aria-label="Middle right cell"></button>
+        <button class="cell" type="button" data-cell aria-label="Bottom left cell"></button>
+        <button class="cell" type="button" data-cell aria-label="Bottom center cell"></button>
+        <button class="cell" type="button" data-cell aria-label="Bottom right cell"></button>
+      </div>
+
+      <footer class="game-footer">
+        <span class="player-chip player-x"><span class="chip-symbol">X</span> Player One</span>
+        <span class="footer-divider" aria-hidden="true"></span>
+        <span class="player-chip player-o"><span class="chip-symbol">O</span> Player Two</span>
+      </footer>
+    </section>
+    <p class="page-note">Take your turn. Make your move.</p>
+  </main>
+</body>
+</html>

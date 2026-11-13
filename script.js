@@ -11,10 +11,13 @@ const settings = {
   nameX: "غزل",
   nameO: "ريما",
   colorX: "#00f3ff",
-  colorO: "#ff007f"
+  colorO: "#ff007f",
+  aiX: false,
+  aiO: false
 };
 let currentPlayer = "X";
 let gameOver = false;
+let aiTimer = null;
 
 const winningCombinations = [
   [0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -27,9 +30,19 @@ function playerName(mark) {
   return customName || (mark === "X" ? "غزل" : "ريما");
 }
 
+function renderTurnMessage() {
+  const mark = document.createElement("span");
+  mark.className = "turn-mark";
+  mark.textContent = `${playerName(currentPlayer)} (${currentPlayer})`;
+  mark.style.color = currentPlayer === "X" ? settings.colorX : settings.colorO;
+  turnMessage.replaceChildren(mark, document.createTextNode(" دورك"));
+}
+
 function renderNames() {
   document.getElementById("score-x-name").textContent = playerName("X");
   document.getElementById("score-o-name").textContent = playerName("O");
+  document.getElementById("ai-x-label").textContent = `${playerName("X")} تلعب كذكاء اصطناعي (X)`;
+  document.getElementById("ai-o-label").textContent = `${playerName("O")} تلعب كذكاء اصطناعي (O)`;
   document.querySelector(".player-x").innerHTML = `<span class="chip-symbol">X</span> ${escapeHtml(playerName("X"))}`;
   document.querySelector(".player-o").innerHTML = `<span class="chip-symbol">O</span> ${escapeHtml(playerName("O"))}`;
 }
@@ -45,6 +58,10 @@ function renderScore() {
   document.getElementById("score-o").textContent = winCount.O;
 }
 
+function isAiPlayer(mark) {
+  return mark === "X" ? settings.aiX : settings.aiO;
+}
+
 function checkWinner() {
   for (const [a, b, c] of winningCombinations) {
     const mark = allCells[a].textContent;
@@ -54,6 +71,8 @@ function checkWinner() {
 }
 
 function finishRound(result) {
+  clearTimeout(aiTimer);
+  clearTimeout(aiTimer);
   gameOver = true;
   allCells.forEach((cell) => cell.classList.add("locked"));
   restartButton.hidden = false;
@@ -62,11 +81,84 @@ function finishRound(result) {
   } else {
     winCount[result] += 1;
     renderScore();
-    turnMessage.textContent = `${playerName(result)} wins!`;
+    turnMessage.textContent = `فازت ${playerName(result)}!`;
   }
 }
 
+function makeMove(index) {
+  if (gameOver || allCells[index].textContent) return;
+  const cell = allCells[index];
+  cell.textContent = currentPlayer;
+  cell.dataset.mark = currentPlayer;
+
+  const winner = checkWinner();
+  if (winner) return finishRound(winner);
+  if (allCells.every((item) => item.textContent)) return finishRound("draw");
+
+  currentPlayer = currentPlayer === "X" ? "O" : "X";
+  renderTurnMessage();
+  scheduleAiMove();
+}
+
+function getBestAiMove(aiMark) {
+  const board = allCells.map((cell) => cell.textContent || "");
+  const opponent = aiMark === "X" ? "O" : "X";
+
+  function winnerFor(state) {
+    for (const [a, b, c] of winningCombinations) {
+      if (state[a] && state[a] === state[b] && state[a] === state[c]) return state[a];
+    }
+    return null;
+  }
+
+  function minimax(state, isMaximizing, depth) {
+    const winner = winnerFor(state);
+    if (winner === aiMark) return 10 - depth;
+    if (winner === opponent) return depth - 10;
+    if (state.every(Boolean)) return 0;
+
+    let best = isMaximizing ? -Infinity : Infinity;
+    for (let index = 0; index < state.length; index += 1) {
+      if (state[index]) continue;
+      state[index] = isMaximizing ? aiMark : opponent;
+      const score = minimax(state, !isMaximizing, depth + 1);
+      state[index] = "";
+      best = isMaximizing ? Math.max(best, score) : Math.min(best, score);
+    }
+    return best;
+  }
+
+  let bestScore = -Infinity;
+  const bestMoves = [];
+  for (let index = 0; index < board.length; index += 1) {
+    if (board[index]) continue;
+    board[index] = aiMark;
+    const score = minimax(board, false, 0);
+    board[index] = "";
+    if (score > bestScore) {
+      bestScore = score;
+      bestMoves.length = 0;
+      bestMoves.push(index);
+    } else if (score === bestScore) {
+      bestMoves.push(index);
+    }
+  }
+  return bestMoves[Math.floor(Math.random() * bestMoves.length)];
+}
+
+function scheduleAiMove() {
+  clearTimeout(aiTimer);
+  if (gameOver || !isAiPlayer(currentPlayer)) return;
+  aiTimer = setTimeout(() => {
+    if (gameOver || !isAiPlayer(currentPlayer)) return;
+    const move = getBestAiMove(currentPlayer);
+    if (move !== undefined) makeMove(move);
+  }, 650);
+}
+
 function restartGame() {
+  clearTimeout(aiTimer);
+  clearTimeout(aiTimer);
   currentPlayer = "X";
   gameOver = false;
   allCells.forEach((cell) => {
@@ -74,30 +166,15 @@ function restartGame() {
     delete cell.dataset.mark;
     cell.classList.remove("locked");
   });
-  turnMessage.innerHTML = `<span class="turn-mark">${escapeHtml(playerName("X"))} (X)</span> دورك`;
-  turnMessage.querySelector(".turn-mark").style.color = settings.colorX;
+  renderTurnMessage();
   restartButton.hidden = true;
+  scheduleAiMove();
 }
 
 allCells.forEach((cell) => {
   cell.addEventListener("click", () => {
-    if (gameOver || cell.textContent) return;
-    cell.textContent = currentPlayer;
-    cell.dataset.mark = currentPlayer;
-
-    const winner = checkWinner();
-    if (winner) {
-      finishRound(winner);
-      return;
-    }
-    if (allCells.every((item) => item.textContent)) {
-      finishRound("draw");
-      return;
-    }
-
-    currentPlayer = currentPlayer === "X" ? "O" : "X";
-    turnMessage.innerHTML = `<span class="turn-mark">${escapeHtml(playerName(currentPlayer))} (${currentPlayer})</span> دورك`;
-    turnMessage.querySelector(".turn-mark").style.color = currentPlayer === "X" ? settings.colorX : settings.colorO;
+    if (isAiPlayer(currentPlayer)) return;
+    makeMove([...allCells].indexOf(cell));
   });
 });
 
@@ -144,6 +221,8 @@ function loadSettings() {
   document.getElementById("player-o-name").value = settings.nameO;
   document.getElementById("color-x").value = settings.colorX;
   document.getElementById("color-o").value = settings.colorO;
+  document.getElementById("ai-x").checked = Boolean(settings.aiX);
+  document.getElementById("ai-o").checked = Boolean(settings.aiO);
   applyTheme(settings.theme);
   const initialTurn = document.querySelector(".turn-mark");
   if (initialTurn) initialTurn.style.color = settings.colorX;
@@ -158,19 +237,21 @@ document.getElementById("save-settings").addEventListener("click", () => {
   if (!settings.nameO) settings.nameO = "ريما";
   settings.colorX = document.getElementById("color-x").value;
   settings.colorO = document.getElementById("color-o").value;
+  settings.aiX = document.getElementById("ai-x").checked;
+  settings.aiO = document.getElementById("ai-o").checked;
   localStorage.setItem("xo-game-settings", JSON.stringify(settings));
   applyTheme(settings.theme);
   renderNames();
   if (!gameOver) {
-    const marker = document.getElementById("turn");
-    if (marker) marker.style.color = currentPlayer === "X" ? settings.colorX : settings.colorO;
-    else {
-      turnMessage.innerHTML = `<span class="turn-mark">${escapeHtml(playerName(currentPlayer))} (${currentPlayer})</span> دورك`;
-      turnMessage.querySelector(".turn-mark").style.color = currentPlayer === "X" ? settings.colorX : settings.colorO;
-    }
+    renderTurnMessage();
+  } else {
+    const winner = checkWinner();
+    if (winner) turnMessage.textContent = `فازت ${playerName(winner)}!`;
   }
+  scheduleAiMove();
   hideSettings();
 });
 
 loadSettings();
 renderScore();
+scheduleAiMove();

@@ -96,6 +96,10 @@ body[dir="rtl"] .modal-close { right:auto; left:16px; }
 .color-fields { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:6px; }
 .color-fields label { display:flex; justify-content:space-between; align-items:center; gap:8px; padding:9px 10px; border:1px solid var(--line); border-radius:10px; }
 .color-fields input { width:34px; height:28px; padding:0; border:0; background:transparent; cursor:pointer; }
+.ai-fields { display:grid; gap:9px; margin-top:16px; }
+.ai-option { display:flex; align-items:center; gap:9px; padding:11px 12px; border:1px solid var(--line); border-radius:11px; color:var(--text); font-size:.78rem; cursor:pointer; }
+.ai-option input { width:17px; height:17px; margin:0; accent-color:var(--x-color); }
+.ai-note { margin:0; color:var(--muted); font-size:.7rem; line-height:1.6; }
 .save-settings { width:100%; margin-top:22px; }
 
 @media (max-width:420px) {

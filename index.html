@@ -9,16 +9,20 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
 <body>
+  <button class="settings-trigger" id="open-settings" type="button" aria-label="Open settings" aria-haspopup="dialog" aria-controls="settings-modal">
+    <i class="fa-solid fa-bars" aria-hidden="true"></i>
+  </button>
   <main class="game-page">
     <section class="game-card" aria-labelledby="game-title">
       <header class="game-header">
         <div class="eyebrow"><span class="status-dot" aria-hidden="true"></span> TWO PLAYER GAME</div>
         <h1 id="game-title">X<span class="title-dash"> ~</span> O <span class="title-game">Game</span></h1>
-        <p class="turn-message" aria-live="polite">It's <span id="turn" class="turn-mark">X</span>'s turn</p>
+        <p class="turn-message" id="turn-message" aria-live="polite">It's <span id="turn" class="turn-mark">X</span>'s turn</p>
       </header>
 
       <div class="game-board" role="group" aria-label="Tic-tac-toe game board">
@@ -33,6 +37,14 @@
         <button class="cell" type="button" data-cell aria-label="Bottom right cell"></button>
       </div>
 
+      <section class="scoreboard" aria-label="Game score">
+        <div class="score-item score-x"><span id="score-x-name">Player One (X)</span><strong id="score-x">0</strong></div>
+        <span class="score-separator" aria-hidden="true">:</span>
+        <div class="score-item score-o"><span id="score-o-name">Player Two (O)</span><strong id="score-o">0</strong></div>
+      </section>
+
+      <button class="restart-button" id="restart-game" type="button" hidden>Play Again</button>
+
       <footer class="game-footer">
         <span class="player-chip player-x"><span class="chip-symbol">X</span> Player One</span>
         <span class="footer-divider" aria-hidden="true"></span>
@@ -41,5 +53,32 @@
     </section>
     <p class="page-note">Take your turn. Make your move.</p>
   </main>
+
+  <div class="modal-backdrop" id="settings-modal" hidden>
+    <section class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <button class="modal-close" id="close-settings" type="button" aria-label="Close settings">&times;</button>
+      <p class="modal-eyebrow">PERSONALIZE YOUR GAME</p>
+      <h2 id="settings-title">Game Settings</h2>
+
+      <fieldset class="theme-fieldset">
+        <legend>Choose a theme</legend>
+        <label class="theme-option"><input type="radio" name="theme" value="neon" checked><span class="theme-preview theme-neon"></span><span>Neon</span></label>
+        <label class="theme-option"><input type="radio" name="theme" value="gradient"><span class="theme-preview theme-gradient"></span><span>Gradient</span></label>
+        <label class="theme-option"><input type="radio" name="theme" value="royal"><span class="theme-preview theme-royal"></span><span>Royal</span></label>
+      </fieldset>
+
+      <div class="name-fields">
+        <label for="player-x-name">Player X name</label>
+        <input id="player-x-name" type="text" maxlength="18" placeholder="Player One">
+        <label for="player-o-name">Player O name</label>
+        <input id="player-o-name" type="text" maxlength="18" placeholder="Player Two">
+      </div>
+      <div class="color-fields">
+        <label for="color-x">X color <input id="color-x" type="color" value="#00f3ff"></label>
+        <label for="color-o">O color <input id="color-o" type="color" value="#ff007f"></label>
+      </div>
+      <button class="save-settings" id="save-settings" type="button">Save Settings</button>
+    </section>
+  </div>
 </body>
 </html>

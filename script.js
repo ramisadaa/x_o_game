@@ -41,8 +41,6 @@ function renderTurnMessage() {
 function renderNames() {
   document.getElementById("score-x-name").textContent = playerName("X");
   document.getElementById("score-o-name").textContent = playerName("O");
-  document.getElementById("ai-x-label").textContent = `${playerName("X")} تلعب كذكاء اصطناعي (X)`;
-  document.getElementById("ai-o-label").textContent = `${playerName("O")} تلعب كذكاء اصطناعي (O)`;
   document.querySelector(".player-x").innerHTML = `<span class="chip-symbol">X</span> ${escapeHtml(playerName("X"))}`;
   document.querySelector(".player-o").innerHTML = `<span class="chip-symbol">O</span> ${escapeHtml(playerName("O"))}`;
 }

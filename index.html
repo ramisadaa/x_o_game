@@ -1,89 +1,153 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#101827">
-  <meta name="description" content="لعبة إكس أو للاعبين">
+  <meta name="description" content="لعبة إكس أو للاعبين، مع خصم ذكي وإعدادات قابلة للتخصيص.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="لعبة إكس أو">
+  <meta property="og:description" content="العب إكس أو مع صديقك أو تحدَّ الذكاء الاصطناعي.">
   <title>لعبة إكس أو</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
-<body>
-  <button class="settings-trigger" id="open-settings" type="button" aria-label="Open settings" aria-haspopup="dialog" aria-controls="settings-modal">
-    <i class="fa-solid fa-bars" aria-hidden="true"></i>
-  </button>
+<body data-theme="neon">
+  <header class="topbar">
+    <span class="brand-mark" aria-hidden="true">إ×أ</span>
+    <button class="settings-trigger" id="open-settings" type="button" aria-label="فتح إعدادات اللعبة" aria-haspopup="dialog" aria-controls="settings-modal" aria-expanded="false" title="إعدادات اللعبة">
+      <span aria-hidden="true">☰</span>
+      <span class="settings-trigger-label">الإعدادات</span>
+    </button>
+  </header>
+
   <main class="game-page">
     <section class="game-card" aria-labelledby="game-title">
       <header class="game-header">
-        <div class="eyebrow"><span class="status-dot" aria-hidden="true"></span> لعبة للاعبين</div>
-        <h1 id="game-title">X<span class="title-dash"> ~</span> O <span class="title-game">Game</span></h1>
-        <p class="turn-message" id="turn-message" aria-live="polite"><span id="turn" class="turn-mark">غزل (X)</span> دورك</p>
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> لعبة إكس أو</p>
+        <h1 id="game-title"><span id="title-x">X</span><span class="title-separator" aria-hidden="true"> × </span><span id="title-o">O</span></h1>
+        <p class="turn-message" id="turn-message" aria-live="polite" aria-atomic="true"></p>
       </header>
 
-      <div class="game-board" role="group" aria-label="Tic-tac-toe game board">
-        <button class="cell" type="button" data-cell aria-label="Top left cell"></button>
-        <button class="cell" type="button" data-cell aria-label="Top center cell"></button>
-        <button class="cell" type="button" data-cell aria-label="Top right cell"></button>
-        <button class="cell" type="button" data-cell aria-label="Middle left cell"></button>
-        <button class="cell" type="button" data-cell aria-label="Center cell"></button>
-        <button class="cell" type="button" data-cell aria-label="Middle right cell"></button>
-        <button class="cell" type="button" data-cell aria-label="Bottom left cell"></button>
-        <button class="cell" type="button" data-cell aria-label="Bottom center cell"></button>
-        <button class="cell" type="button" data-cell aria-label="Bottom right cell"></button>
+      <div class="game-board" id="game-board" role="grid" aria-label="لوحة لعبة إكس أو" dir="ltr">
+        <button class="cell" type="button" role="gridcell" data-index="0" aria-label="الصف الأول، العمود الأول، فارغة"></button>
+        <button class="cell" type="button" role="gridcell" data-index="1" aria-label="الصف الأول، العمود الثاني، فارغة"></button>
+        <button class="cell" type="button" role="gridcell" data-index="2" aria-label="الصف الأول، العمود الثالث، فارغة"></button>
+        <button class="cell" type="button" role="gridcell" data-index="3" aria-label="الصف الثاني، العمود الأول، فارغة"></button>
+        <button class="cell" type="button" role="gridcell" data-index="4" aria-label="الصف الثاني، العمود الثاني، فارغة"></button>
+        <button class="cell" type="button" role="gridcell" data-index="5" aria-label="الصف الثاني، العمود الثالث، فارغة"></button>
+        <button class="cell" type="button" role="gridcell" data-index="6" aria-label="الصف الثالث، العمود الأول، فارغة"></button>
+        <button class="cell" type="button" role="gridcell" data-index="7" aria-label="الصف الثالث، العمود الثاني، فارغة"></button>
+        <button class="cell" type="button" role="gridcell" data-index="8" aria-label="الصف الثالث، العمود الثالث، فارغة"></button>
       </div>
+      <p class="visually-hidden" id="move-announcer" aria-live="polite" aria-atomic="true"></p>
 
-      <section class="scoreboard" aria-label="Game score">
-        <div class="score-item score-x"><span id="score-x-name">غزل</span><strong id="score-x">0</strong></div>
-        <span class="score-separator" aria-hidden="true">:</span>
-        <div class="score-item score-o"><span id="score-o-name">ريما</span><strong id="score-o">0</strong></div>
+      <section class="scoreboard" aria-label="نتائج اللاعبين">
+        <article class="score-card score-x">
+          <span class="score-symbol" aria-hidden="true">X</span>
+          <span class="score-name" id="score-x-name">غزل</span>
+          <strong class="score-value" id="score-x">0</strong>
+        </article>
+        <article class="score-card score-o">
+          <span class="score-symbol" aria-hidden="true">O</span>
+          <span class="score-name" id="score-o-name">ريما</span>
+          <strong class="score-value" id="score-o">0</strong>
+        </article>
+        <article class="score-card score-draws">
+          <span class="draw-symbol" aria-hidden="true">＝</span>
+          <span class="score-name">تعادل</span>
+          <strong class="score-value" id="score-draws">0</strong>
+        </article>
       </section>
+      <p class="round-count" id="round-count">الجولات: 0</p>
 
-      <button class="restart-button" id="restart-game" type="button" hidden>العبوا مرة أخرى</button>
-
-      <footer class="game-footer">
-        <span class="player-chip player-x"><span class="chip-symbol">X</span> غزل</span>
-        <span class="footer-divider" aria-hidden="true"></span>
-        <span class="player-chip player-o"><span class="chip-symbol">O</span> ريما</span>
-      </footer>
+      <div class="game-actions" aria-label="أدوات الجولة">
+        <button class="action-button primary-action" id="new-round" type="button">جولة جديدة</button>
+        <button class="action-button" id="undo-move" type="button" disabled>تراجع</button>
+        <button class="action-button" id="hint-move" type="button" disabled>تلميح</button>
+        <button class="action-button quiet-action" id="reset-score" type="button">تصفير النقاط</button>
+      </div>
+      <p class="storage-note" id="storage-note" role="status" aria-live="polite"></p>
     </section>
-    <p class="page-note">خذي دورك، واختاري حركتك</p>
+    <p class="page-note">اختر خانة لتلعب. يمكنك تغيير الأسماء والثيم من الإعدادات.</p>
   </main>
 
-  <div class="modal-backdrop" id="settings-modal" hidden>
-    <section class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
-      <button class="modal-close" id="close-settings" type="button" aria-label="Close settings">&times;</button>
-      <p class="modal-eyebrow">خصصوا اللعبة كما تحبون</p>
-      <h2 id="settings-title">إعدادات اللعبة</h2>
+  <dialog class="settings-dialog" id="settings-modal" aria-labelledby="settings-title">
+    <form class="settings-form" id="settings-form" novalidate>
+      <header class="dialog-header">
+        <div>
+          <p class="modal-eyebrow">إعدادات اللعبة</p>
+          <h2 id="settings-title" tabindex="-1">خصّص طريقة اللعب</h2>
+        </div>
+      </header>
 
       <fieldset class="theme-fieldset">
-        <legend>اختاري الثيم</legend>
-        <label class="theme-option"><input type="radio" name="theme" value="neon" checked><span class="theme-preview theme-neon"></span><span>نيون</span></label>
-        <label class="theme-option"><input type="radio" name="theme" value="gradient"><span class="theme-preview theme-gradient"></span><span>متدرج</span></label>
-        <label class="theme-option"><input type="radio" name="theme" value="royal"><span class="theme-preview theme-royal"></span><span>ملكي</span></label>
+        <legend>المظهر</legend>
+        <div class="theme-options">
+          <label class="theme-option"><input type="radio" name="theme" value="neon"><span class="theme-preview preview-neon" aria-hidden="true"></span><span>نيون</span></label>
+          <label class="theme-option"><input type="radio" name="theme" value="gradient"><span class="theme-preview preview-gradient" aria-hidden="true"></span><span>متدرج</span></label>
+          <label class="theme-option"><input type="radio" name="theme" value="royal"><span class="theme-preview preview-royal" aria-hidden="true"></span><span>ملكي</span></label>
+          <label class="theme-option"><input type="radio" name="theme" value="light"><span class="theme-preview preview-light" aria-hidden="true"></span><span>فاتح</span></label>
+          <label class="theme-option"><input type="radio" name="theme" value="contrast"><span class="theme-preview preview-contrast" aria-hidden="true"></span><span>تباين عالٍ</span></label>
+        </div>
       </fieldset>
 
-      <div class="name-fields">
-        <label for="player-x-name">اسم لاعبة X</label>
-        <input id="player-x-name" type="text" maxlength="18" placeholder="غزل">
-        <label for="player-o-name">اسم لاعبة O</label>
-        <input id="player-o-name" type="text" maxlength="18" placeholder="ريما">
+      <div class="settings-grid">
+        <label class="field"><span>اسم لاعب X</span><input id="player-x-name" name="playerXName" type="text" maxlength="18" autocomplete="off" spellcheck="false" placeholder="اللاعب الأول"></label>
+        <label class="field"><span>اسم لاعب O</span><input id="player-o-name" name="playerOName" type="text" maxlength="18" autocomplete="off" spellcheck="false" placeholder="اللاعب الثاني"></label>
       </div>
-      <div class="color-fields">
-        <label for="color-x">لون X <input id="color-x" type="color" value="#00f3ff"></label>
-        <label for="color-o">لون O <input id="color-o" type="color" value="#ff007f"></label>
+
+      <fieldset class="color-fieldset">
+        <legend>ألوان الرموز</legend>
+        <div class="color-fields">
+          <label class="color-field" for="color-x"><span>X</span><input id="color-x" type="color" value="#54f0de"></label>
+          <label class="color-field" for="color-o"><span>O</span><input id="color-o" type="color" value="#ffad5f"></label>
+          <button class="text-button" id="reset-colors" type="button">استعادة ألوان الثيم</button>
+        </div>
+      </fieldset>
+
+      <fieldset class="players-fieldset">
+        <legend>نوع اللاعبين</legend>
+        <div class="settings-grid">
+          <label class="field"><span>اللاعب X</span><select id="player-x-type"><option value="human">لاعب بشري</option><option value="ai">ذكاء اصطناعي</option></select></label>
+          <label class="field"><span>اللاعب O</span><select id="player-o-type"><option value="human">لاعب بشري</option><option value="ai">ذكاء اصطناعي</option></select></label>
+        </div>
+      </fieldset>
+
+      <div class="settings-grid compact-grid">
+        <label class="field"><span>صعوبة الذكاء</span><select id="ai-difficulty"><option value="easy">سهل</option><option value="medium">متوسط</option><option value="hard">صعب</option></select></label>
+        <label class="field"><span>من يبدأ؟</span><select id="starter"><option value="alternate">بالتناوب</option><option value="x">لاعب X</option><option value="o">لاعب O</option><option value="random">اختيار عشوائي</option><option value="loser">الخاسر في الجولة السابقة</option></select></label>
+        <label class="field"><span>سرعة الذكاء</span><select id="ai-speed"><option value="300">سريعة</option><option value="650">عادية</option><option value="1100">هادئة</option></select></label>
       </div>
-      <div class="ai-fields">
-        <label class="ai-option" for="ai-x"><span>لاعب 1 ذكاء اصطناعي</span><input id="ai-x" type="checkbox"></label>
-        <label class="ai-option" for="ai-o"><span>لاعب 2 ذكاء اصطناعي</span><input id="ai-o" type="checkbox"></label>
-        <p class="ai-note">إذا فعّلتِ الخيارين، ستلعب اللعبة تلقائيًا بين الذكاءين مع مهلة قصيرة بين الحركات.</p>
+
+      <p class="form-message" id="form-message" role="alert" aria-live="assertive"></p>
+      <div class="dialog-actions">
+        <button class="save-button" id="save-settings" type="submit">حفظ وإغلاق</button>
+        <button class="cancel-button" id="cancel-settings" type="button">إلغاء وإغلاق</button>
+        <button class="reset-settings-button" id="reset-settings" type="button">الإعدادات الافتراضية</button>
       </div>
-      <button class="save-settings" id="save-settings" type="button">حفظ الإعدادات</button>
-    </section>
-  </div>
+    </form>
+  </dialog>
+
+  <dialog class="confirm-dialog" id="confirm-reset" aria-labelledby="confirm-title">
+    <h2 id="confirm-title">تصفير النتائج؟</h2>
+    <p>سيتم حذف عدد الانتصارات والتعادلات والجولات المحفوظة.</p>
+    <div class="dialog-actions">
+      <button class="save-button" id="confirm-reset-yes" type="button">تصفير</button>
+      <button class="cancel-button" id="confirm-reset-no" type="button">إلغاء</button>
+    </div>
+  </dialog>
+
+  <dialog class="confirm-dialog" id="confirm-new-round" aria-labelledby="confirm-round-title">
+    <h2 id="confirm-round-title">بدء جولة جديدة؟</h2>
+    <p>سيتم مسح حركات الجولة الحالية، مع الاحتفاظ بالنقاط.</p>
+    <div class="dialog-actions">
+      <button class="save-button" id="confirm-round-yes" type="button">ابدأ الجولة</button>
+      <button class="cancel-button" id="confirm-round-no" type="button">إلغاء</button>
+    </div>
+  </dialog>
+
+  <noscript><p class="noscript-message">تحتاج اللعبة إلى JavaScript لتعمل. فعّل JavaScript في المتصفح ثم أعد تحميل الصفحة.</p></noscript>
 </body>
 </html>

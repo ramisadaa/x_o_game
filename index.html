@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#101827">
-  <meta name="description" content="A clean and responsive X-O game board.">
-  <title>X-O Game</title>
+  <meta name="description" content="لعبة إكس أو للاعبين">
+  <title>لعبة إكس أو</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -20,9 +20,9 @@
   <main class="game-page">
     <section class="game-card" aria-labelledby="game-title">
       <header class="game-header">
-        <div class="eyebrow"><span class="status-dot" aria-hidden="true"></span> TWO PLAYER GAME</div>
+        <div class="eyebrow"><span class="status-dot" aria-hidden="true"></span> لعبة للاعبين</div>
         <h1 id="game-title">X<span class="title-dash"> ~</span> O <span class="title-game">Game</span></h1>
-        <p class="turn-message" id="turn-message" aria-live="polite">It's <span id="turn" class="turn-mark">X</span>'s turn</p>
+        <p class="turn-message" id="turn-message" aria-live="polite"><span id="turn" class="turn-mark">غزل (X)</span> دورك</p>
       </header>
 
       <div class="game-board" role="group" aria-label="Tic-tac-toe game board">
@@ -38,46 +38,46 @@
       </div>
 
       <section class="scoreboard" aria-label="Game score">
-        <div class="score-item score-x"><span id="score-x-name">Player One (X)</span><strong id="score-x">0</strong></div>
+        <div class="score-item score-x"><span id="score-x-name">غزل</span><strong id="score-x">0</strong></div>
         <span class="score-separator" aria-hidden="true">:</span>
-        <div class="score-item score-o"><span id="score-o-name">Player Two (O)</span><strong id="score-o">0</strong></div>
+        <div class="score-item score-o"><span id="score-o-name">ريما</span><strong id="score-o">0</strong></div>
       </section>
 
-      <button class="restart-button" id="restart-game" type="button" hidden>Play Again</button>
+      <button class="restart-button" id="restart-game" type="button" hidden>العبوا مرة أخرى</button>
 
       <footer class="game-footer">
-        <span class="player-chip player-x"><span class="chip-symbol">X</span> Player One</span>
+        <span class="player-chip player-x"><span class="chip-symbol">X</span> غزل</span>
         <span class="footer-divider" aria-hidden="true"></span>
-        <span class="player-chip player-o"><span class="chip-symbol">O</span> Player Two</span>
+        <span class="player-chip player-o"><span class="chip-symbol">O</span> ريما</span>
       </footer>
     </section>
-    <p class="page-note">Take your turn. Make your move.</p>
+    <p class="page-note">خذي دورك، واختاري حركتك</p>
   </main>
 
   <div class="modal-backdrop" id="settings-modal" hidden>
     <section class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title">
       <button class="modal-close" id="close-settings" type="button" aria-label="Close settings">&times;</button>
-      <p class="modal-eyebrow">PERSONALIZE YOUR GAME</p>
-      <h2 id="settings-title">Game Settings</h2>
+      <p class="modal-eyebrow">خصصوا اللعبة كما تحبون</p>
+      <h2 id="settings-title">إعدادات اللعبة</h2>
 
       <fieldset class="theme-fieldset">
-        <legend>Choose a theme</legend>
-        <label class="theme-option"><input type="radio" name="theme" value="neon" checked><span class="theme-preview theme-neon"></span><span>Neon</span></label>
-        <label class="theme-option"><input type="radio" name="theme" value="gradient"><span class="theme-preview theme-gradient"></span><span>Gradient</span></label>
-        <label class="theme-option"><input type="radio" name="theme" value="royal"><span class="theme-preview theme-royal"></span><span>Royal</span></label>
+        <legend>اختاري الثيم</legend>
+        <label class="theme-option"><input type="radio" name="theme" value="neon" checked><span class="theme-preview theme-neon"></span><span>نيون</span></label>
+        <label class="theme-option"><input type="radio" name="theme" value="gradient"><span class="theme-preview theme-gradient"></span><span>متدرج</span></label>
+        <label class="theme-option"><input type="radio" name="theme" value="royal"><span class="theme-preview theme-royal"></span><span>ملكي</span></label>
       </fieldset>
 
       <div class="name-fields">
-        <label for="player-x-name">Player X name</label>
-        <input id="player-x-name" type="text" maxlength="18" placeholder="Player One">
-        <label for="player-o-name">Player O name</label>
-        <input id="player-o-name" type="text" maxlength="18" placeholder="Player Two">
+        <label for="player-x-name">اسم لاعبة X</label>
+        <input id="player-x-name" type="text" maxlength="18" placeholder="غزل">
+        <label for="player-o-name">اسم لاعبة O</label>
+        <input id="player-o-name" type="text" maxlength="18" placeholder="ريما">
       </div>
       <div class="color-fields">
-        <label for="color-x">X color <input id="color-x" type="color" value="#00f3ff"></label>
-        <label for="color-o">O color <input id="color-o" type="color" value="#ff007f"></label>
+        <label for="color-x">لون X <input id="color-x" type="color" value="#00f3ff"></label>
+        <label for="color-o">لون O <input id="color-o" type="color" value="#ff007f"></label>
       </div>
-      <button class="save-settings" id="save-settings" type="button">Save Settings</button>
+      <button class="save-settings" id="save-settings" type="button">حفظ الإعدادات</button>
     </section>
   </div>
 </body>

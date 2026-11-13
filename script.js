@@ -8,8 +8,8 @@ const restartButton = document.getElementById("restart-game");
 const winCount = { X: 0, O: 0 };
 const settings = {
   theme: "neon",
-  nameX: "",
-  nameO: "",
+  nameX: "غزل",
+  nameO: "ريما",
   colorX: "#00f3ff",
   colorO: "#ff007f"
 };
@@ -24,7 +24,7 @@ const winningCombinations = [
 
 function playerName(mark) {
   const customName = mark === "X" ? settings.nameX : settings.nameO;
-  return customName || (mark === "X" ? "Player One (X)" : "Player Two (O)");
+  return customName || (mark === "X" ? "غزل" : "ريما");
 }
 
 function renderNames() {
@@ -58,7 +58,7 @@ function finishRound(result) {
   allCells.forEach((cell) => cell.classList.add("locked"));
   restartButton.hidden = false;
   if (result === "draw") {
-    turnMessage.textContent = "It's a draw!";
+    turnMessage.textContent = "تعادل!";
   } else {
     winCount[result] += 1;
     renderScore();
@@ -74,7 +74,7 @@ function restartGame() {
     delete cell.dataset.mark;
     cell.classList.remove("locked");
   });
-  turnMessage.innerHTML = `It's <span class="turn-mark">X</span>'s turn`;
+  turnMessage.innerHTML = `<span class="turn-mark">${escapeHtml(playerName("X"))} (X)</span> دورك`;
   turnMessage.querySelector(".turn-mark").style.color = settings.colorX;
   restartButton.hidden = true;
 }
@@ -96,7 +96,7 @@ allCells.forEach((cell) => {
     }
 
     currentPlayer = currentPlayer === "X" ? "O" : "X";
-    turnMessage.innerHTML = `It's <span class="turn-mark">${currentPlayer}</span>'s turn`;
+    turnMessage.innerHTML = `<span class="turn-mark">${escapeHtml(playerName(currentPlayer))} (${currentPlayer})</span> دورك`;
     turnMessage.querySelector(".turn-mark").style.color = currentPlayer === "X" ? settings.colorX : settings.colorO;
   });
 });
@@ -105,7 +105,6 @@ restartButton.addEventListener("click", restartGame);
 
 function showSettings() {
   settingsModal.hidden = false;
-  document.getElementById("player-x-name").focus();
 }
 
 function hideSettings() {
@@ -131,7 +130,12 @@ function applyTheme(theme) {
 function loadSettings() {
   try {
     const saved = JSON.parse(localStorage.getItem("xo-game-settings"));
-    if (saved) Object.assign(settings, saved);
+    if (saved) {
+      Object.assign(settings, saved);
+      if (!settings.nameX) settings.nameX = "غزل";
+      if (!settings.nameO) settings.nameO = "ريما";
+      if (!["neon", "gradient", "royal"].includes(settings.theme)) settings.theme = "neon";
+    }
   } catch {
     localStorage.removeItem("xo-game-settings");
   }
@@ -150,6 +154,8 @@ document.getElementById("save-settings").addEventListener("click", () => {
   settings.theme = document.querySelector('input[name="theme"]:checked').value;
   settings.nameX = document.getElementById("player-x-name").value.trim();
   settings.nameO = document.getElementById("player-o-name").value.trim();
+  if (!settings.nameX) settings.nameX = "غزل";
+  if (!settings.nameO) settings.nameO = "ريما";
   settings.colorX = document.getElementById("color-x").value;
   settings.colorO = document.getElementById("color-o").value;
   localStorage.setItem("xo-game-settings", JSON.stringify(settings));
@@ -159,7 +165,7 @@ document.getElementById("save-settings").addEventListener("click", () => {
     const marker = document.getElementById("turn");
     if (marker) marker.style.color = currentPlayer === "X" ? settings.colorX : settings.colorO;
     else {
-      turnMessage.innerHTML = `It's <span class="turn-mark">${currentPlayer}</span>'s turn`;
+      turnMessage.innerHTML = `<span class="turn-mark">${escapeHtml(playerName(currentPlayer))} (${currentPlayer})</span> دورك`;
       turnMessage.querySelector(".turn-mark").style.color = currentPlayer === "X" ? settings.colorX : settings.colorO;
     }
   }
